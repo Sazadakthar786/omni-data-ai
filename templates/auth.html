@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omni Data AI — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#00f5c4;--secondary:#7b61ff;--accent:#ff6b6b;
+  --bg:#060b18;--surface:#0d1628;--surface2:#111e35;
+  --border:#1a2d4a;--text:#e8f4fd;--muted:#5a7a99;
+  --font-mono:'Space Mono',monospace;--font-body:'Outfit',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,245,196,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,196,0.03) 1px,transparent 1px);background-size:60px 60px}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none}
+.orb1{width:500px;height:500px;background:#7b61ff;opacity:.1;top:-200px;right:-100px;animation:float 12s ease-in-out infinite}
+.orb2{width:400px;height:400px;background:#00f5c4;opacity:.08;bottom:-100px;left:100px;animation:float 12s ease-in-out infinite 4s}
+@keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-20px)}}
+
+.auth-wrapper{position:relative;z-index:1;width:100%;max-width:440px;padding:24px}
+.auth-card{background:rgba(13,22,40,0.9);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:40px;box-shadow:0 24px 80px rgba(0,0,0,0.5)}
+
+.logo{text-align:center;margin-bottom:32px}
+.logo-icon{display:inline-flex;margin-bottom:12px}
+.logo-main{display:block;font-family:var(--font-mono);font-size:18px;letter-spacing:4px;color:var(--primary);font-weight:700}
+.logo-sub{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px}
+
+.tabs{display:flex;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:28px;gap:4px}
+.tab{flex:1;padding:10px;border:none;background:none;color:var(--muted);font-size:13px;font-family:var(--font-body);font-weight:500;border-radius:7px;cursor:pointer;transition:all .2s}
+.tab.active{background:var(--primary);color:var(--bg);font-weight:600}
+
+.form{display:none}
+.form.active{display:block}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;font-family:var(--font-mono);letter-spacing:1px;color:var(--muted);margin-bottom:6px}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;font-family:var(--font-body);outline:none;transition:border-color .2s}
+.field input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,245,196,.08)}
+.field input::placeholder{color:var(--muted)}
+
+.submit-btn{width:100%;padding:13px;background:var(--primary);border:none;border-radius:10px;color:var(--bg);font-size:14px;font-family:var(--font-body);font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px;letter-spacing:.5px}
+.submit-btn:hover{background:#00d4a8;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,245,196,.25)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.error-msg{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--accent);margin-bottom:14px;display:none}
+.success-msg{background:rgba(0,245,196,.08);border:1px solid rgba(0,245,196,.3);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--primary);margin-bottom:14px;display:none}
+
+.divider{text-align:center;font-size:11px;color:var(--muted);font-family:var(--font-mono);margin:20px 0;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.divider::before{left:0}.divider::after{right:0}
+
+.footer-text{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;line-height:1.6}
+
+.spinner{width:16px;height:16px;border:2px solid rgba(6,11,24,.4);border-top-color:var(--bg);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="36" height="36" viewBox="0 0 28 28" fill="none">
+          <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#00f5c4" stroke-width="1.5"/>
+          <circle cx="14" cy="14" r="4" fill="#00f5c4" opacity="0.9"/>
+          <line x1="14" y1="2" x2="14" y2="10" stroke="#7b61ff" stroke-width="1.5"/>
+          <line x1="14" y1="18" x2="14" y2="26" stroke="#7b61ff" stroke-width="1.5"/>
+          <line x1="26" y1="8" x2="19" y2="11.5" stroke="#7b61ff" stroke-width="1.5"/>
+          <line x1="9" y1="16.5" x2="2" y2="20" stroke="#7b61ff" stroke-width="1.5"/>
+          <line x1="2" y1="8" x2="9" y2="11.5" stroke="#7b61ff" stroke-width="1.5"/>
+          <line x1="19" y1="16.5" x2="26" y2="20" stroke="#7b61ff" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <span class="logo-main">OMNI DATA AI</span>
+      <span class="logo-sub">INTELLIGENT VISUALIZATION PLATFORM</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+      <button class="tab" id="registerTab" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form active" id="loginForm">
+      <div class="error-msg" id="loginError"></div>
+      <div class="success-msg" id="loginSuccess"></div>
+      <div class="field">
+        <label>USERNAME OR EMAIL</label>
+        <input type="text" id="loginIdentifier" placeholder="Enter username or email" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>PASSWORD</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+      <button class="submit-btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form" id="registerForm">
+      <div class="error-msg" id="registerError"></div>
+      <div class="success-msg" id="registerSuccess"></div>
+      <div class="field">
+        <label>USERNAME</label>
+        <input type="text" id="regUsername" placeholder="Choose a username" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>EMAIL ADDRESS</label>
+        <input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>PASSWORD</label>
+        <input type="password" id="regPassword" placeholder="Minimum 6 characters" autocomplete="new-password">
+      </div>
+      <button class="submit-btn" id="registerBtn" onclick="doRegister()">Create Account →</button>
+    </div>
+
+    <div class="footer-text">
+      Omni Data AI — Intelligent Multi-Format Data Visualization<br>
+      Supports CSV · Excel · JSON · PDF · Python · R
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+  document.getElementById(tab + 'Tab').classList.add('active');
+  document.getElementById(tab + 'Form').classList.add('active');
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+function showSuccess(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function doLogin() {
+  const btn = document.getElementById('loginBtn');
+  const identifier = document.getElementById('loginIdentifier').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!identifier || !password) { showError('loginError', 'Please fill all fields'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in…';
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({identifier, password})
+    });
+    const data = await res.json();
+    if (data.error) { showError('loginError', data.error); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+    showSuccess('loginSuccess', `Welcome back, ${data.username}! Redirecting…`);
+    setTimeout(() => window.location.href = '/app', 800);
+  } catch(e) { showError('loginError', 'Connection error'); btn.disabled = false; btn.textContent = 'Sign In →'; }
+}
+
+async function doRegister() {
+  const btn = document.getElementById('registerBtn');
+  const username = document.getElementById('regUsername').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  if (!username || !email || !password) { showError('registerError', 'Please fill all fields'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Creating account…';
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, email, password})
+    });
+    const data = await res.json();
+    if (data.error) { showError('registerError', data.error); btn.disabled = false; btn.textContent = 'Create Account →'; return; }
+    showSuccess('registerSuccess', `Account created! Welcome, ${data.username}! Redirecting…`);
+    setTimeout(() => window.location.href = '/app', 800);
+  } catch(e) { showError('registerError', 'Connection error'); btn.disabled = false; btn.textContent = 'Create Account →'; }
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  if (document.getElementById('loginForm').classList.contains('active')) doLogin();
+  else doRegister();
+});
+</script>
+</body>
+</html>

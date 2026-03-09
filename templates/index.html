@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omni Data AI — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-theme="dark">
+
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+</div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+        <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#00f5c4" stroke-width="1.5"/>
+        <circle cx="14" cy="14" r="4" fill="#00f5c4" opacity="0.9"/>
+        <line x1="14" y1="2" x2="14" y2="10" stroke="#7b61ff" stroke-width="1.5"/>
+        <line x1="14" y1="18" x2="14" y2="26" stroke="#7b61ff" stroke-width="1.5"/>
+        <line x1="26" y1="8" x2="19" y2="11.5" stroke="#7b61ff" stroke-width="1.5"/>
+        <line x1="9" y1="16.5" x2="2" y2="20" stroke="#7b61ff" stroke-width="1.5"/>
+        <line x1="2" y1="8" x2="9" y2="11.5" stroke="#7b61ff" stroke-width="1.5"/>
+        <line x1="19" y1="16.5" x2="26" y2="20" stroke="#7b61ff" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="logo-main">OMNI DATA</span>
+      <span class="logo-sub">AI PLATFORM</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">WORKSPACE</div>
+    <a href="#" class="nav-item active" data-panel="upload">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      Data Ingestion
+    </a>
+    <a href="#" class="nav-item" data-panel="visualize">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Visualize
+    </a>
+    <a href="#" class="nav-item" data-panel="nlp">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Ask AI <span class="badge">NLP</span>
+    </a>
+    <a href="#" class="nav-item" data-panel="compare">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      Compare Data
+    </a>
+    <div class="nav-label" style="margin-top:16px">ANALYSIS</div>
+    <a href="#" class="nav-item" data-panel="dashboard">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      My Dashboard
+    </a>
+    <a href="#" class="nav-item" data-panel="stats">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      Statistics
+    </a>
+    <a href="#" class="nav-item" data-panel="docint">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      Document Intelligence <span class="badge">NLP</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">{{ user.username[0].upper() }}</div>
+      <div class="user-details">
+        <div class="user-name">{{ user.username }}</div>
+        <div class="user-role">Data Analyst</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="main-wrapper" id="mainWrapper">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="breadcrumb" id="breadcrumb">Data Ingestion</div>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <div class="data-pill" id="dataPill">
+        <span class="pill-dot inactive"></span>
+        <span id="pillText">No data</span>
+      </div>
+      <button class="btn-icon" id="downloadBtn" disabled title="Download chart">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      </button>
+      <button class="btn-primary-sm" id="pdfBtn" disabled onclick="downloadPDF()">↓ PDF Report</button>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ── UPLOAD PANEL ── -->
+    <section class="panel active" id="panel-upload">
+      <div class="panel-header">
+        <h2>Data Ingestion <span class="tag">MULTI-FORMAT</span></h2>
+        <p>Upload your dataset — CSV, Excel, JSON, PDF, Python, R supported</p>
+      </div>
+
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-inner">
+          <div class="upload-icon-wrap">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#00f5c4" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div class="upload-ring"></div>
+          </div>
+          <strong>Drop your file here</strong>
+          <span>or <label class="link" for="fileInput">browse to upload</label></span>
+          <div class="format-pills">
+            <span>CSV</span><span>XLSX</span><span>JSON</span><span>PDF</span><span>PY</span><span>R</span>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json,.pdf,.py,.r" hidden>
+
+      <!-- Real-time log -->
+      <div class="process-log" id="processLog" style="display:none">
+        <div class="log-header">
+          <span class="log-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00f5c4" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            AI PROCESSING LOG
+          </span>
+          <span id="logPercent">0%</span>
+        </div>
+        <div class="log-track"><div class="log-fill" id="logFill"></div></div>
+        <div class="log-lines" id="logLines"></div>
+      </div>
+
+      <!-- Info cards -->
+      <div class="info-grid" id="infoGrid" style="display:none">
+        <div class="info-card"><div class="info-lbl">ROWS</div><div class="info-val" id="iRows">—</div></div>
+        <div class="info-card"><div class="info-lbl">COLUMNS</div><div class="info-val" id="iCols">—</div></div>
+        <div class="info-card"><div class="info-lbl">NUMERIC</div><div class="info-val" id="iNum">—</div></div>
+        <div class="info-card"><div class="info-lbl">CATEGORICAL</div><div class="info-val" id="iCat">—</div></div>
+      </div>
+
+      <!-- AI Recommendations -->
+      <div class="rec-box" id="recBox" style="display:none">
+        <div class="rec-header">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7b61ff" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          AI RECOMMENDED CHARTS FOR YOUR DATA
+        </div>
+        <div class="rec-cards" id="recCards"></div>
+      </div>
+
+      <div class="smart-insight-box" id="smartInsightBox" style="display:none">
+        <div class="smart-insight-hdr">◈ SMART ANALYSIS <span class="dataset-type-badge" id="datasetTypeBadge"></span></div>
+        <p id="smartInsightTxt"></p>
+      </div>
+
+      <!-- Clean report -->
+      <div class="clean-box" id="cleanBox" style="display:none">
+        <div class="clean-hdr">✓ DATA CLEANING COMPLETE</div>
+        <ul id="cleanList"></ul>
+      </div>
+
+      <!-- Preview table -->
+      <div class="table-wrap" id="tableWrap" style="display:none">
+        <div class="table-hdr">
+          <span>DATA PREVIEW <span class="muted">(first 8 rows)</span></span>
+          <button class="btn-sm btn-p" onclick="switchPanel('visualize')">Visualize Now →</button>
+        </div>
+        <div class="table-scroll"><table id="previewTable"></table></div>
+      </div>
+    </section>
+
+    <!-- ── VISUALIZE PANEL ── -->
+    <section class="panel" id="panel-visualize">
+      <div class="panel-header">
+        <h2>Visualization Engine <span class="tag">15 CHART TYPES</span></h2>
+        <p>Select a chart type — AI will generate and explain it automatically</p>
+      </div>
+
+      <div class="chart-grid" id="chartGrid">
+        <div class="chart-btn" data-type="correlation_matrix"><div class="ci">⬡</div><div class="cl">Correlation Matrix</div><div class="cd">Feature relationships</div></div>
+        <div class="chart-btn" data-type="heatmap"><div class="ci">▦</div><div class="cl">Heatmap</div><div class="cd">Intensity map</div></div>
+        <div class="chart-btn" data-type="cluster_plot"><div class="ci">◎</div><div class="cl">Cluster Plot</div><div class="cd">K-Means groups</div></div>
+        <div class="chart-btn" data-type="pca_plot"><div class="ci">⬢</div><div class="cl">PCA Analysis</div><div class="cd">Dimensionality reduction</div></div>
+        <div class="chart-btn" data-type="dendrogram"><div class="ci">⌥</div><div class="cl">Dendrogram</div><div class="cd">Hierarchical clusters</div></div>
+        <div class="chart-btn" data-type="scatter_plot"><div class="ci">∷</div><div class="cl">Scatter Plot</div><div class="cd">Linear relationships</div></div>
+        <div class="chart-btn" data-type="distribution_plot"><div class="ci">∿</div><div class="cl">Distribution</div><div class="cd">Statistical spread</div></div>
+        <div class="chart-btn" data-type="bar_chart"><div class="ci">▐</div><div class="cl">Bar Chart</div><div class="cd">Category comparison</div></div>
+        <div class="chart-btn" data-type="box_plot"><div class="ci">▬</div><div class="cl">Box Plot</div><div class="cd">Quartile analysis</div></div>
+        <div class="chart-btn" data-type="violin_plot"><div class="ci">♦</div><div class="cl">Violin Plot</div><div class="cd">Full distribution</div></div>
+        <div class="chart-btn" data-type="anomaly_detection"><div class="ci">⚠</div><div class="cl">Anomaly Detection</div><div class="cd">Outlier discovery</div></div>
+        <div class="chart-btn" data-type="time_series"><div class="ci">⟿</div><div class="cl">Time Series</div><div class="cd">Trend analysis</div></div>
+        <div class="chart-btn" data-type="bubble_chart"><div class="ci">◉</div><div class="cl">Bubble Chart</div><div class="cd">4D visualization</div></div>
+        <div class="chart-btn" data-type="confusion_matrix"><div class="ci">⊞</div><div class="cl">Confusion Matrix</div><div class="cd">ML classification</div></div>
+        <div class="chart-btn" data-type="feature_importance"><div class="ci">≋</div><div class="cl">Feature Importance</div><div class="cd">Predictive ranking</div></div>
+      </div>
+
+      <!-- Chart output -->
+      <div class="chart-out" id="chartOut" style="display:none">
+        <div class="chart-out-hdr">
+          <span id="chartTitle">—</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label class="custom-select">
+              <select id="colSelect" title="Select specific columns"></select>
+            </label>
+            <button class="btn-sm" id="addDashBtn">+ Dashboard</button>
+            <button class="btn-sm btn-p" id="dlChartBtn">↓ PNG</button>
+          </div>
+        </div>
+        <div class="chart-canvas" id="chartCanvas">
+          <div class="chart-spin" id="chartSpin" style="display:none">
+            <div class="spinner"></div><span>Generating visualization…</span>
+          </div>
+          <img id="chartImg" src="" alt="" style="display:none">
+        </div>
+        <div class="insight-block" id="insightBlock" style="display:none">
+          <div class="insight-lbl">◈ AI INSIGHT</div>
+          <p id="insightTxt"></p>
+        </div>
+        <div class="error-suggestion-panel" id="errorSuggestPanel" style="display:none">
+          <div class="error-suggest-msg" id="errorSuggestMsg"></div>
+          <div class="error-suggest-tip" id="errorSuggestTip"></div>
+          <div class="error-suggest-btns" id="errorSuggestBtns"></div>
+        </div>
+        <!-- Column-level insights -->
+        <div class="col-insights" id="colInsights" style="display:none">
+          <div class="col-insights-hdr">COLUMN-LEVEL ANALYSIS — Click any column name</div>
+          <div class="col-chips" id="colChips"></div>
+          <div class="col-detail" id="colDetail" style="display:none"></div>
+        </div>
+      </div>
+
+      <div class="empty-state" id="emptyViz">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <p>Upload a dataset first to generate visualizations</p>
+        <button class="btn-sm btn-p" onclick="switchPanel('upload')">Upload Data →</button>
+      </div>
+      <!-- Auto-selected charts for fallback types -->
+      <div class="clean-box" id="autoVizBox" style="display:none">
+        <div class="clean-hdr">AI selected these charts for your dataset type</div>
+        <div id="autoVizGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
+      </div>
+    </section>
+
+    <!-- ── ASK AI PANEL ── -->
+    <section class="panel" id="panel-nlp">
+      <div class="panel-header">
+        <h2>Ask AI <span class="tag">NATURAL LANGUAGE</span></h2>
+        <p>Describe what you want to see in plain English</p>
+      </div>
+      <div class="nlp-wrap">
+        <div class="example-section">
+          <div class="ex-label">EXAMPLE COMMANDS:</div>
+          <div class="ex-grid">
+            <button class="ex-chip" onclick="setCmd('Show me the correlation matrix')">Show me the correlation matrix</button>
+            <button class="ex-chip" onclick="setCmd('Detect anomalies in my data')">Detect anomalies in my data</button>
+            <button class="ex-chip" onclick="setCmd('Create a cluster analysis')">Create a cluster analysis</button>
+            <button class="ex-chip" onclick="setCmd('Show feature importance')">Show feature importance</button>
+            <button class="ex-chip" onclick="setCmd('Generate a heatmap')">Generate a heatmap</button>
+            <button class="ex-chip" onclick="setCmd('Show time series trend')">Show time series trend</button>
+            <button class="ex-chip" onclick="setCmd('Display violin plot')">Display violin plot</button>
+            <button class="ex-chip" onclick="setCmd('Make a bubble chart')">Make a bubble chart</button>
+          </div>
+        </div>
+        <div class="nlp-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f5c4" stroke-width="2" style="flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="nlpInput" placeholder="e.g. Show me how the features correlate with each other…">
+          <button class="nlp-go" id="nlpGo">Send</button>
+        </div>
+        <div class="nlp-out" id="nlpOut" style="display:none">
+          <div class="nlp-out-hdr">
+            <span class="ai-tag">◈ OMNI AI</span>
+            <span id="nlpType" style="font-family:var(--font-mono);font-size:10px;color:var(--muted)"></span>
+          </div>
+          <p id="nlpMsg"></p>
+          <img id="nlpImg" src="" alt="" style="display:none;margin-top:14px;border-radius:10px;width:100%">
+          <div class="insight-block" id="nlpInsightBlock" style="display:none;margin-top:10px">
+            <div class="insight-lbl">◈ AI INSIGHT</div>
+            <p id="nlpInsightTxt"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── COMPARE PANEL ── -->
+    <section class="panel" id="panel-compare">
+      <div class="panel-header">
+        <h2>Data Comparison <span class="tag">SIDE BY SIDE</span></h2>
+        <p>Upload a second dataset to compare against your primary data</p>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-slot" id="slot1">
+          <div class="slot-label">DATASET A <span class="slot-status" id="slot1Status">Not loaded</span></div>
+          <div class="slot-content" id="slot1Content">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            <p>Primary dataset<br><span class="muted">Upload from Data Ingestion</span></p>
+          </div>
+        </div>
+        <div class="compare-vs">VS</div>
+        <div class="compare-slot" id="slot2">
+          <div class="slot-label">DATASET B <span class="slot-status" id="slot2Status">Not loaded</span></div>
+          <div class="slot-content" id="slot2Content">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            <p>Upload comparison dataset</p>
+            <button class="btn-sm btn-p" onclick="document.getElementById('compareFile').click()">Upload File</button>
+            <input type="file" id="compareFile" accept=".csv,.xlsx,.xls,.json" hidden>
+          </div>
+        </div>
+      </div>
+      <div id="compareResults" style="display:none"></div>
+    </section>
+
+    <section class="panel" id="panel-docint">
+      <div class="panel-header">
+        <h2>Document Intelligence <span class="tag">AUTO-DIAGRAM</span></h2>
+        <p>Upload any English document — AI reads every word and generates technical diagrams automatically</p>
+      </div>
+      <div class="doc-upload-zone" id="docUploadZone">
+        <div class="upload-inner">
+          <strong>Drop your document here</strong>
+          <span>or <label class="link" for="docFileInput">browse to upload</label></span>
+          <div class="format-pills"><span>PDF</span><span>DOCX</span><span>TXT</span></div>
+        </div>
+      </div>
+      <!-- Move the document file input OUTSIDE the zone to avoid bubbling -->
+      <input type="file" id="docFileInput" accept=".pdf,.docx,.txt" hidden>
+      <div class="process-log" id="docProcessLog" style="display:none">
+        <div class="log-header"><span class="log-title">AI DOCUMENT ANALYSIS LOG</span><span id="docProcessPercent">0%</span></div>
+        <div class="log-track"><div class="log-fill" id="docProcessFill"></div></div>
+        <div class="log-lines" id="docProcessLines"></div>
+      </div>
+      <div id="docResultsSection" style="display:none">
+        <div class="doc-type-badge" id="docTypeBadge"></div>
+        <div class="entity-chips" id="entityChips" style="margin:12px 0;display:flex;flex-wrap:wrap;gap:6px"></div>
+        <div class="diagram-grid" id="diagramGrid"></div>
+        <button class="doc-download-btn" id="downloadDocPdfBtn" style="display:none">↓ Download Illustrated PDF</button>
+      </div>
+    </section>
+    <!-- ── DASHBOARD PANEL ── -->
+    <section class="panel" id="panel-dashboard">
+      <div class="panel-header">
+        <h2>My Dashboard <span class="tag" id="dashTag">0 CHARTS</span></h2>
+        <p>Pinned visualizations — drag to reorder, export as PDF report</p>
+      </div>
+      <div id="dashActions" style="display:none;margin-bottom:16px;display:none;justify-content:flex-end;gap:8px">
+        <button class="btn-sm" id="clearDashBtn" onclick="clearDashboard()">Clear All</button>
+        <button class="btn-sm btn-p" onclick="downloadPDF()">↓ Export PDF Report</button>
+      </div>
+      <div class="dash-grid" id="dashGrid" ondragover="allowDrop(event)" ondrop="dropChart(event)">
+        <div class="dash-empty" id="dashEmpty">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <p>No charts pinned yet.<br>Generate a visualization and click <em>+ Dashboard</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STATS PANEL ── -->
+    <section class="panel" id="panel-stats">
+      <div class="panel-header">
+        <h2>Descriptive Statistics <span class="tag">AUTO-COMPUTED</span></h2>
+        <p>Click any column name for deep AI analysis</p>
+      </div>
+      <div id="statsWrap">
+        <div class="empty-state">
+          <p>Upload data to view statistics</p>
+          <button class="btn-sm btn-p" onclick="switchPanel('upload')">Upload Data →</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Column insight modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <span id="modalTitle">Column Analysis</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
